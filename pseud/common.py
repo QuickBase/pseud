@@ -279,8 +279,12 @@ class BaseRPC(object):
         value = self.packer.unpackb(message)
         logger.debug('Client result {!r} from {!r}'.format(value,
                                                            message_uuid))
-        future = self.future_pool.pop(message_uuid)
-        future.set_result(value)
+        future = self.future_pool.pop(message_uuid, None)
+        # the future might already have been cleaned-up by the timeout task
+        # and it is possible to get an out-of-order reply from the other end
+        # so if this is the case, just discard the message
+        if future:
+            future.set_result(value)
 
     def _handle_error(self, message, message_uuid):
         value = self.packer.unpackb(message)

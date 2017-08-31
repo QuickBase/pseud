@@ -7,3 +7,6 @@ docs/build/
 .cache/
 __pycache__/
 *.pyc
+.idea/
+.python-version
+
