@@ -106,9 +106,9 @@ class TestingHeartbeatBackendForServer(_BaseHeartbeatBackend):
     task_pool = {}
 
     async def handle_timeout(self, user_id, routing_id):
-        logger.debug(f'Timeout detected for {routing_id}')
+        logger.debug('Timeout detected for {routing_id}'.format(routing_id=routing_id))
         user_id_str = user_id.decode('utf-8')
-        await self.monitoring_socket.send(f'Gone {user_id_str}'.encode())
+        await self.monitoring_socket.send('Gone {user_id_str}'.format(user_id_str=user_id_str).encode())
 
     async def handle_heartbeat(self, user_id, routing_id):
         await self.monitoring_socket.send(user_id)

@@ -77,7 +77,7 @@ def register_rpc(func=None, name=None, domain='default', registry=registry,
             endpoint_name = fn.__name__
         else:
             endpoint_name = name
-        registered_name = f'{endpoint_name}:{domain}'
+        registered_name = '{endpoint_name}:{domain}'.format(endpoint_name=endpoint_name, domain=domain)
         registry.registerUtility(
             RPCCallable(fn, name=endpoint_name, domain=domain,
                         with_identity=with_identity),
