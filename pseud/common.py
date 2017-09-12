@@ -384,11 +384,14 @@ class BaseRPC(object):
             if exc.errno == zmq.EHOSTUNREACH:
                 # ROUTER does not know yet the recipient
                 if self.counter[message[0]] > MAX_EHOSTUNREACH_RETRY:
+                    logger.exception('Failed to send message after retries')
                     return
                 self.counter[message[0]] += 1
                 # retry in 100 ms
                 await asyncio.sleep(.1)
                 await self.send_message(message)
+            else:
+                logger.exception('ZMQ error sending message')
 
     async def start(self):
         if self.reader is None:
