@@ -37,6 +37,8 @@ import pickle
 
 import msgpack
 
+import zmq.sugar
+
 logger = logging.getLogger(__name__)
 
 _pickle_dumps = functools.partial(
@@ -70,6 +72,8 @@ class Packer:
 
     def unpackb(self, packed):
         try:
+            if isinstance(packed, zmq.sugar.Frame):
+                packed = packed.bytes
             return msgpack.unpackb(packed, use_list=False, encoding='utf-8',
                                    ext_hook=self.ext_type_unpack_hook)
         except:
