@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 _marker = object()
 
-MAX_EHOSTUNREACH_RETRY = 3
+MAX_EHOSTUNREACH_RETRY = 10
 
 internal_exceptions = tuple(name for name in dir(interfaces) if
                             inspect.isclass(getattr(interfaces, name)) and
@@ -380,18 +380,19 @@ class BaseRPC(object):
     async def send_message(self, message):
         try:
             await self.socket.send_multipart(message)
+            return
         except zmq.error.ZMQError as exc:
             if exc.errno == zmq.EHOSTUNREACH:
                 # ROUTER does not know yet the recipient
                 if self.counter[message[0]] > MAX_EHOSTUNREACH_RETRY:
-                    logger.exception('Failed to send message after retries')
-                    return
-                self.counter[message[0]] += 1
-                # retry in 100 ms
-                await asyncio.sleep(.1)
-                await self.send_message(message)
+                    raise asyncio.TimeoutError()
             else:
                 logger.exception('ZMQ error sending message')
+                raise
+
+        self.counter[message[0]] += 1
+        await asyncio.sleep(self.timeout*1.0 / MAX_EHOSTUNREACH_RETRY)
+        await self.send_message(message)
 
     async def start(self):
         if self.reader is None:
