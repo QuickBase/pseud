@@ -385,10 +385,11 @@ class BaseRPC(object):
             if exc.errno == zmq.EHOSTUNREACH:
                 # ROUTER does not know yet the recipient
                 if self.counter[message[0]] > MAX_EHOSTUNREACH_RETRY:
-                    raise asyncio.TimeoutError()
+                    logger.debug('Still EHOSTUNREACH error sending message after retries. Message dropped')
+                    return
             else:
-                logger.exception('ZMQ error sending message')
-                raise
+                logger.exception('ZMQ error sending message. Message dropped')
+                return
 
         self.counter[message[0]] += 1
         await asyncio.sleep(self.timeout*1.0 / MAX_EHOSTUNREACH_RETRY)
