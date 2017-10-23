@@ -380,27 +380,26 @@ class BaseRPC(object):
     async def send_message(self, message):
         try:
             await self.socket.send_multipart(message)
-            return
+            del self.counter[message[0]]              # successful send - clear the retry counter for this routing ID
         except zmq.error.ZMQError as exc:
             if exc.errno == zmq.EHOSTUNREACH:
                 # ROUTER does not know yet the recipient
+                self.counter[message[0]] += 1
                 if self.counter[message[0]] > MAX_EHOSTUNREACH_RETRY:
-                    logger.debug('Still EHOSTUNREACH error sending message after retries. Message dropped')
+                    logger.warning('Still EHOSTUNREACH error sending message after retries. Message dropped')
                     return
+                logger.debug('EHOSTUNREACH error sending message after retries, counter %r', self.counter[message[0]])
+                await asyncio.sleep(self.timeout*1.0 / MAX_EHOSTUNREACH_RETRY)
+                await self.send_message(message)
             else:
-                logger.exception('ZMQ error sending message. Message dropped')
-                return
-
-        self.counter[message[0]] += 1
-        await asyncio.sleep(self.timeout*1.0 / MAX_EHOSTUNREACH_RETRY)
-        await self.send_message(message)
+                logger.exception('ZMQ error %r sending message. Message dropped', exc.errno)
 
     async def start(self):
         if self.reader is None:
+            self.counter = Counter()
             self.reader = self.loop.create_task(
                 read_forever(self.socket, self.on_socket_ready))
             self.reader.add_done_callback(handle_result)
-        self.counter = Counter()
 
     def timeout_task(self, uuid):
         try:
