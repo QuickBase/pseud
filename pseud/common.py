@@ -47,7 +47,6 @@ class DummyFuture:
             raise exception
         except Exception:
             logger.exception('Captured exception from main loop')
-            raise
 
 
 def format_remote_traceback(traceback):
