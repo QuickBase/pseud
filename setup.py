@@ -42,7 +42,7 @@ setup(name='pseud',
           'Intended Audience :: System Administrators',
           'License :: OSI Approved :: Apache Software License',
           'Operating System :: OS Independent',
-          'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.7',
       ],
       keywords='rpc zeromq pyzmq curve bidirectional asyncio',
       )
