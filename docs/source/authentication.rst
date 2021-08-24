@@ -29,16 +29,16 @@ You can start with the following snippet ::
         def __init__(self, rpc):
             self.rpc = rpc
 
-        def stop(self):
+        async def stop(self):
             pass
 
         def configure(self):
             pass
 
-        def handle_hello(self, *args):
+        async def handle_hello(self, *args):
             pass
 
-        def handle_authenticated(self, message):
+        async def handle_authenticated(self, message):
             pass
 
         async def is_authenticated(self, user_id):
