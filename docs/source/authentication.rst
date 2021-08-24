@@ -41,7 +41,7 @@ You can start with the following snippet ::
         def handle_authenticated(self, message):
             pass
 
-        def is_authenticated(self, user_id):
+        async def is_authenticated(self, user_id):
             return True
 
         def save_last_work(self, message):

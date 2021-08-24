@@ -68,7 +68,7 @@ class IAuthenticationBackend(zope.interface.Interface):
         authenctication challenge.
         """
 
-    def is_authenticated(user_id):
+    async def is_authenticated(user_id):
         """
         Must return True or False and tell if rpc must challenge
         authentication for the current peer.
