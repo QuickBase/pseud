@@ -57,6 +57,11 @@ class IAuthenticationBackend(zope.interface.Interface):
                                    'Welcome {!r}'.format(user_id)])
         """
 
+    async def handle_authentication(self, user_id, routing_id, message_uuid):
+        """
+        Called when rpc received acknowledgement of failed authentication.
+        """
+
     async def handle_authenticated(message):
         """
         Called when rpc received acknowledgement of successful authentication.
