@@ -9,7 +9,7 @@ def read_that_file(path):
 long_description = '\n'.join((read_that_file('README.rst'),
                               read_that_file('LICENSE.txt')))
 
-version = '1.0.0-nt9'
+version = '1.0.0+qb.11'
 
 
 setup(name='pseud',
@@ -42,7 +42,7 @@ setup(name='pseud',
           'Intended Audience :: System Administrators',
           'License :: OSI Approved :: Apache Software License',
           'Operating System :: OS Independent',
-          'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.7',
       ],
       keywords='rpc zeromq pyzmq curve bidirectional asyncio',
       )

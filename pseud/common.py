@@ -240,7 +240,7 @@ class BaseRPC(object):
             # PROBING message
             return
         assert version == VERSION
-        if not self.auth_backend.is_authenticated(user_id):
+        if not await self.auth_backend.is_authenticated(user_id):
             if message_type != HELLO:
                 return await self.auth_backend.handle_authentication(
                     user_id, routing_id, message_uuid)

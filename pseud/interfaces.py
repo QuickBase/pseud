@@ -41,7 +41,7 @@ class IAuthenticationBackend(zope.interface.Interface):
         Can be either IOLoop, threading, or multiprocess.
         """
 
-    def handle_hello(user_id, routing_id, message_uuid, message):
+    async def handle_hello(user_id, routing_id, message_uuid, message):
         """
         This method is receiving information that has been asked
         to authenticate the peer. It can be for instance login/password
@@ -57,7 +57,12 @@ class IAuthenticationBackend(zope.interface.Interface):
                                    'Welcome {!r}'.format(user_id)])
         """
 
-    def handle_authenticated(message):
+    async def handle_authentication(self, user_id, routing_id, message_uuid):
+        """
+        Called when rpc received acknowledgement of failed authentication.
+        """
+
+    async def handle_authenticated(message):
         """
         Called when rpc received acknowledgement of successful authentication.
         """
@@ -68,7 +73,7 @@ class IAuthenticationBackend(zope.interface.Interface):
         authenctication challenge.
         """
 
-    def is_authenticated(user_id):
+    async def is_authenticated(user_id):
         """
         Must return True or False and tell if rpc must challenge
         authentication for the current peer.

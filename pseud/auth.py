@@ -52,7 +52,7 @@ class NoOpAuthenticationBackendForClient(_BaseAuthBackend):
     async def handle_authenticated(self, message):
         pass
 
-    def is_authenticated(self, peer_id):
+    async def is_authenticated(self, peer_id):
         return True
 
     def save_last_work(self, message):
@@ -105,7 +105,7 @@ class CurveWithTrustedKeyForClient(_BaseAuthBackend):
     def save_last_work(self, message):
         pass
 
-    def is_authenticated(self, peer_id):
+    async def is_authenticated(self, peer_id):
         return True
 
     def get_predicate_arguments(self, peer_id):
@@ -174,7 +174,7 @@ class CurveWithTrustedKeyForServer(_BaseAuthBackend):
     def save_last_work(self, message):
         pass
 
-    def is_authenticated(self, peer_id):
+    async def is_authenticated(self, peer_id):
         return True
 
     def get_predicate_arguments(self, peer_id):
@@ -223,7 +223,7 @@ class PlainForClient(_BaseAuthBackend):
     def save_last_work(self, message):
         pass
 
-    def is_authenticated(self, peer_id):
+    async def is_authenticated(self, peer_id):
         return True
 
     def get_predicate_arguments(self, peer_id):
@@ -293,7 +293,7 @@ class PlainForServer(_BaseAuthBackend):
     def save_last_work(self, message):
         pass
 
-    def is_authenticated(self, peer_id):
+    async def is_authenticated(self, peer_id):
         return True
 
     def get_predicate_arguments(self, peer_id):
@@ -394,7 +394,7 @@ class CurveWithUntrustedKeyForClient(_BaseAuthBackend):
     def save_last_work(self, message):
         self.last_messages.append(message)
 
-    def is_authenticated(self, peer_id):
+    async def is_authenticated(self, peer_id):
         return True
 
     async def stop(self):
@@ -500,7 +500,7 @@ class CurveWithUntrustedKeyForServer(_BaseAuthBackend):
         await self.rpc.send_message([routing_id, EMPTY_DELIMITER, VERSION,
                                      message_uuid, status, reply])
 
-    def is_authenticated(self, user_id):
+    async def is_authenticated(self, user_id):
         result = False
         if user_id in self.trusted_keys:
             result = True
