@@ -151,3 +151,5 @@ Back on server side, we can send to it any commands the client is able to do.
 Documentation
 ~~~~~~~~~~~~~
 `Pseud on Readthedocs <https://pseud.readthedocs.io/en/latest/index.html>`_
+
+hello world
