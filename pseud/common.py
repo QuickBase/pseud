@@ -281,8 +281,17 @@ class BaseRPC(object):
         future = self.future_pool.pop(message_uuid, None)
         # the future might already have been cleaned-up by the timeout task
         # and it is possible to get an out-of-order reply from the other end
-        # so if this is the case, just discard the message
-        if future:
+        # so if this is the case, just discard the message.
+
+        # not future.done():
+        # Guard against a race: timeout_task sets the exception on the future but
+        # cleanup_future (the done callback) is scheduled via call_soon, not called
+        # synchronously. If read_forever receives a late response for the same UUID
+        # before cleanup_future runs, the future is still in the pool but already
+        # resolved — calling set_result() raises InvalidStateError and permanently
+        # kills the read_forever task, making the server unable to receive any RPC
+        # responses until manually restarted.
+        if future and not future.done():
             future.set_result(value)
 
     def _handle_error(self, message, message_uuid):
