@@ -368,11 +368,13 @@ class CurveWithUntrustedKeyForClient(_BaseAuthBackend):
 
     async def handle_authentication(self, user_id, routing_id, message_uuid):
         if next(self.counter) >= self.max_retries:
-            try:
-                future = self.rpc.future_pool.pop(message_uuid)
-            except KeyError:
-                pass
-            else:
+            future = self.rpc.future_pool.pop(message_uuid, None)
+            # The future may be gone (cleaned up by the timeout task) or
+            # resolved-but-not-yet-removed from the pool (its cleanup_future
+            # done-callback runs via call_soon). Setting an exception on an
+            # already-resolved future raises InvalidStateError, which would
+            # propagate out of read_forever and kill the main loop.
+            if future is not None and not future.done():
                 future.set_exception(UnauthorizedError('Max authentication'
                                                        ' retries reached'))
         else:

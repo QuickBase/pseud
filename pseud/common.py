@@ -296,7 +296,16 @@ class BaseRPC(object):
 
     def _handle_error(self, message, message_uuid):
         value = self.packer.unpackb(message)
-        future = self.future_pool.pop(message_uuid, DummyFuture())
+        future = self.future_pool.pop(message_uuid, None)
+        # Same race as _handle_ok: the future might already have been
+        # cleaned up by the timeout task (missing from the pool), or be
+        # resolved-but-not-yet-removed because its cleanup_future done-callback
+        # runs via call_soon rather than synchronously. Calling set_exception
+        # on an already-resolved future raises InvalidStateError, which would
+        # propagate out of read_forever and kill the main loop. Fall back to a
+        # DummyFuture that only logs the out-of-order remote error.
+        if future is None or future.done():
+            future = DummyFuture()
         klass, message, traceback = value
         full_message = '\n'.join((format_remote_traceback(traceback),
                                   message))
@@ -410,10 +419,12 @@ class BaseRPC(object):
             self.reader.add_done_callback(handle_result)
 
     def timeout_task(self, uuid):
-        try:
-            self.future_pool[uuid].set_exception(asyncio.TimeoutError())
-        except KeyError:
-            pass
+        future = self.future_pool.get(uuid)
+        # The future may be missing (already resolved and cleaned up) or
+        # resolved-but-not-yet-removed from the pool; only time it out while it
+        # is still pending, otherwise set_exception raises InvalidStateError.
+        if future is not None and not future.done():
+            future.set_exception(asyncio.TimeoutError())
 
     async def stop(self):
         if self.reader is not None:
