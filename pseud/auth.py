@@ -30,6 +30,9 @@ class _BaseAuthBackend:
     def __init__(self, rpc):
         self.rpc = rpc
 
+    async def handle_authentication(self, user_id, routing_id, message_uuid):
+        pass
+
 
 @register_auth_backend
 @zope.interface.implementer(IAuthenticationBackend)
