@@ -97,7 +97,11 @@ async def test_basic_heartbeating(loop):
                 sink.extend(await monitoring_socket.recv_multipart())
 
         task = loop.create_task(collector(sink))
-        await asyncio.sleep(1.1)
+        # PLAIN auth handshake + PUB/SUB slow-joiner add up to ~0.5s of
+        # startup latency before the first heartbeat is observed, so the
+        # window needs enough steady-state time on top of that for 10
+        # heartbeats sent every .1s to actually land.
+        await asyncio.sleep(2)
         task.cancel()
         assert len(sink) >= 10
         assert all([b'client' == i for i in sink]), sink

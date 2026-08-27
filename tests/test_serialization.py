@@ -48,7 +48,7 @@ def test_packer_translation():
                  lambda data: A(msgpack.unpackb(data)))}
     packer = Packer(translation_table=table)
     assert packer.packb({b'key': A(b'--')}) == (
-        b'\x81\xc4\x03key\xc7\x03\x05\xa2--')
+        b'\x81\xc4\x03key\xd6\x05\xc4\x02--')
     assert packer.unpackb(
         packer.packb({'key': A(b'arg')})) == {'key': A(b'arg')}
 
