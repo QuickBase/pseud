@@ -6,6 +6,16 @@ import pytest
 import zmq
 
 
+@pytest.fixture
+def loop():
+    # These tests are plain sync functions, not driven by pytest-asyncio,
+    # so SyncClient needs its own loop set as current on this thread.
+    new_loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(new_loop)
+    yield new_loop
+    new_loop.close()
+
+
 def test_client_creation():
     from pseud import SyncClient
     client = SyncClient()

@@ -1,20 +1,18 @@
 import asyncio
+import os
+import stat
 
 import pytest
+import pytest_asyncio
 import zmq.asyncio
 
 
-@pytest.fixture
-def event_loop():
-    loop = zmq.asyncio.ZMQEventLoop()
-    asyncio.set_event_loop(loop)
-    yield loop
-    loop.close()
-
-
-@pytest.fixture
-def loop(event_loop):
-    return event_loop
+@pytest_asyncio.fixture
+async def loop():
+    # pytest-asyncio drives each async test on its own loop and no longer
+    # lets a same-named fixture override it, so grab that loop instead of
+    # creating a separate one that the test wouldn't actually run on.
+    return asyncio.get_running_loop()
 
 
 @pytest.fixture(autouse=True)
