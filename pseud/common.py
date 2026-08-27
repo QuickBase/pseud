@@ -143,7 +143,17 @@ class BaseRPC(object):
             name=heartbeat_plugin)
         self.proxy_to = proxy_to
         self.reader = None
-        self.loop = loop or asyncio.get_event_loop()
+        if loop is not None:
+            self.loop = loop
+        else:
+            try:
+                self.loop = asyncio.get_event_loop()
+            except RuntimeError:
+                # No loop is running and none is set for this thread.
+                # Recreate the fallback that asyncio.get_event_loop() itself
+                # used to provide, before it started raising instead.
+                self.loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(self.loop)
         self.reader = None
         self.registry = (registry if registry is not None
                          else create_local_registry(user_id or ''))
