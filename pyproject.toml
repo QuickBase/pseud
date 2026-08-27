@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "pseud"
-version = "1.0.0+qb.12"
+version = "1.0.0+qb.13"
 description = "Bidirectionnal RPC Api on top of pyzmq"
 readme = "README.rst"
 license = "Apache-2.0"

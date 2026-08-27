@@ -712,7 +712,7 @@ wheels = [
 
 [[package]]
 name = "pseud"
-version = "1.0.0+qb.12"
+version = "1.0.0+qb.13"
 source = { editable = "." }
 dependencies = [
     { name = "msgpack" },
