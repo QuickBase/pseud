@@ -1,3 +1,0 @@
--e .
-repoze.sphinx.autointerface
-sphinx
