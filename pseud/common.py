@@ -74,7 +74,15 @@ def handle_result(future):
 async def read_forever(socket, callback, copy=False):
     while True:
         result = await socket.recv_multipart(copy=copy)
-        await callback(result)
+        try:
+            await callback(result)
+        # asyncio.CancelledError is subclass of BaseException since 3.8
+        except Exception:
+            # This task is the only consumer of the socket. If an exception
+            # escaped here it would kill the task and cut off every peer until
+            # a manual restart.
+            # Drop the bad message, log it, and keep reading.
+            logger.exception('Error handling received message')
 
 
 class AttributeWrapper(object):
