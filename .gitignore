@@ -3,10 +3,11 @@ dist/
 build/
 docs/build/
 .coverage
-.tox/
 .cache/
 __pycache__/
 *.pyc
 .idea/
 .python-version
+.venv/
+.pytest_cache/
 

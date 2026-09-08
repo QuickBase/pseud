@@ -6,6 +6,16 @@ import pytest
 import zmq
 
 
+@pytest.fixture
+def loop():
+    # These tests are plain sync functions, not driven by pytest-asyncio,
+    # so SyncClient needs its own loop set as current on this thread.
+    new_loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(new_loop)
+    yield new_loop
+    new_loop.close()
+
+
 def test_client_creation():
     from pseud import SyncClient
     client = SyncClient()
@@ -175,14 +185,14 @@ def test_job_server_never_reply(loop):
 
     def server_callback(socket, request):
         peer_id, _, version, uid, message_type, message = request
-        assert _ == ''
+        assert _ == b''
         assert version == VERSION
         assert uid
         # check it is a real uuid
         uuid.UUID(bytes=uid)
         assert message_type == WORK
         locator, args, kw = Packer().unpackb(message)
-        assert locator == b'please.do_that_job'
+        assert locator == 'please.do_that_job'
         assert args == (1, 2)
         assert kw == {'b': 5}
 

@@ -64,7 +64,7 @@ class Packer:
 
     def packb(self, data):
         try:
-            return msgpack.packb(data, encoding='utf-8', use_bin_type=True,
+            return msgpack.packb(data, use_bin_type=True,
                                  default=self.ext_type_pack_hook)
         except:
             logger.exception('Packing failed')
@@ -74,7 +74,7 @@ class Packer:
         try:
             if isinstance(packed, zmq.sugar.Frame):
                 packed = packed.bytes
-            return msgpack.unpackb(packed, use_list=False, encoding='utf-8',
+            return msgpack.unpackb(packed, use_list=False,
                                    ext_hook=self.ext_type_unpack_hook)
         except:
             logger.exception('Unpacking failed')

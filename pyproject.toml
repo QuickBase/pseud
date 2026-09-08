@@ -1,0 +1,60 @@
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
+
+[project]
+name = "pseud"
+version = "1.0.0+qb.13"
+description = "Bidirectionnal RPC Api on top of pyzmq"
+readme = "README.rst"
+license = "Apache-2.0"
+authors = [
+    { name = "Nicolas Delaby", email = "ticosax@free.fr" },
+]
+requires-python = ">=3.10"
+keywords = ["rpc", "zeromq", "pyzmq", "curve", "bidirectional", "asyncio"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "pyzmq>=14.4",
+    "msgpack>=1.0",
+    "zope.component",
+    "zope.interface",
+]
+
+[project.urls]
+Homepage = "https://github.com/ticosax/pseud"
+Documentation = "https://pseud.readthedocs.io/en/latest/index.html"
+
+[project.optional-dependencies]
+doc = ["sphinx", "repoze.sphinx.autointerface"]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "pytest-asyncio",
+]
+
+[tool.uv.build-backend]
+module-root = ""
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+default = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+]

@@ -49,6 +49,9 @@ class NoOpAuthenticationBackendForClient(_BaseAuthBackend):
     async def handle_hello(self, *args):
         pass
 
+    async def handle_authentication(self, user_id, routing_id, message_uuid):
+        pass
+
     async def handle_authenticated(self, message):
         pass
 
@@ -97,6 +100,9 @@ class CurveWithTrustedKeyForClient(_BaseAuthBackend):
         pass
 
     async def handle_hello(self, *args):
+        pass
+
+    async def handle_authentication(self, user_id, routing_id, message_uuid):
         pass
 
     async def handle_authenticated(self, message):
@@ -168,6 +174,9 @@ class CurveWithTrustedKeyForServer(_BaseAuthBackend):
     async def handle_hello(self, *args):
         pass
 
+    async def handle_authentication(self, user_id, routing_id, message_uuid):
+        pass
+
     async def handle_authenticated(self, message):
         pass
 
@@ -215,6 +224,9 @@ class PlainForClient(_BaseAuthBackend):
         pass
 
     async def handle_hello(self, *args):
+        pass
+
+    async def handle_authentication(self, user_id, routing_id, message_uuid):
         pass
 
     async def handle_authenticated(self, message):
@@ -285,6 +297,9 @@ class PlainForServer(_BaseAuthBackend):
         await self.zap_socket.send_multipart(reply)
 
     async def handle_hello(self, *args):
+        pass
+
+    async def handle_authentication(self, user_id, routing_id, message_uuid):
         pass
 
     async def handle_authenticated(self, message):
